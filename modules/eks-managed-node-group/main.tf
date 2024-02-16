@@ -36,6 +36,9 @@ locals {
 resource "aws_launch_template" "this" {
   count = var.create && var.create_launch_template && var.use_custom_launch_template ? 1 : 0
 
+  name        = var.launch_template_use_name_prefix ? null : local.launch_template_name
+  name_prefix = var.launch_template_use_name_prefix ? "${local.launch_template_name}-" : null
+
   dynamic "block_device_mappings" {
     for_each = var.block_device_mappings
 
@@ -210,9 +213,6 @@ resource "aws_launch_template" "this" {
       enabled = var.enable_monitoring
     }
   }
-
-  name        = var.launch_template_use_name_prefix ? null : local.launch_template_name
-  name_prefix = var.launch_template_use_name_prefix ? "${local.launch_template_name}-" : null
 
   dynamic "network_interfaces" {
     for_each = var.network_interfaces
